@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 import { FaIdCard, FaTicketAlt, FaUser } from "react-icons/fa"
+import InputMask from "react-input-mask"
 import { supabase } from "../lib/supabase"
 import Modal from "./Modal"
 
@@ -62,25 +63,36 @@ export default function AddPersonForm({ isOpen, onClose, onAdd }: AddPersonFormP
         </div>
         <div className="relative">
           <FaIdCard className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder="CPF"
+          <InputMask
+            mask="999.999.999-99"
             value={cpf}
             onChange={(e) => setCpf(e.target.value)}
-            className="w-full p-2 pl-10 border rounded focus:outline-none focus:ring-2 focus:ring-yellow-600"
-            required
-          />
+          >
+            {(inputProps: any) => (
+              <input
+                {...inputProps}
+                type="text"
+                placeholder="CPF"
+                className="w-full p-2 pl-10 border rounded focus:outline-none focus:ring-2 focus:ring-yellow-600"
+                required
+              />
+            )}
+          </InputMask>
         </div>
         <div className="relative">
           <FaTicketAlt className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Lote"
+          <select
             value={lot}
             onChange={(e) => setLot(e.target.value)}
             className="w-full p-2 pl-10 border rounded focus:outline-none focus:ring-2 focus:ring-yellow-600"
             required
-          />
+          >
+            <option value="" disabled>Selecione o Lote</option>
+            <option value="Calouro 1º">Calouro 1º</option>
+            <option value="Veterano 1º">Veterano 1º</option>
+            <option value="Calouro 2º">Calouro 2º</option>
+            <option value="Veterano 2º">Veterano 2º</option>
+          </select>
         </div>
         <button
           type="submit"
@@ -93,4 +105,3 @@ export default function AddPersonForm({ isOpen, onClose, onAdd }: AddPersonFormP
     </Modal>
   )
 }
-
