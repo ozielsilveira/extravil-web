@@ -1,7 +1,8 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { FaCheckCircle, FaSearch, FaUserPlus } from "react-icons/fa"
+import { FaCheckCircle, FaSearch, FaSignOutAlt, FaUserPlus } from "react-icons/fa"
 import { supabase } from "../lib/supabase"
 import AddPersonForm from "./AddPersonForm"
 import CheckInModal from "./CheckInModal"
@@ -15,6 +16,7 @@ interface Person {
 }
 
 export default function PeopleList() {
+  const router = useRouter()
   const [people, setPeople] = useState<Person[]>([])
   const [filteredPeople, setFilteredPeople] = useState<Person[]>([])
   const [error, setError] = useState<string | null>(null)
@@ -95,6 +97,11 @@ export default function PeopleList() {
     }
   }
 
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn")
+    router.push("/login")
+  }
+
   if (loading) {
     return <div className="text-center text-white text-2xl">Carregando participantes...</div>
   }
@@ -104,9 +111,9 @@ export default function PeopleList() {
   }
 
   return (
-    <div className="bg-white bg-opacity-90 rounded-lg shadow-xl p-6">
-      <div className="mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
-        <div className="relative w-full md:w-2/3">
+    <div className="bg-white bg-opacity-90 rounded-lg shadow-xl p-4 sm:p-6">
+      <div className="mb-6 flex flex-col gap-4">
+        <div className="relative w-full">
           <input
             type="text"
             placeholder="Buscar participantes..."
@@ -116,18 +123,27 @@ export default function PeopleList() {
           />
           <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
         </div>
-        <button
-          onClick={() => setIsAddModalOpen(true)}
-          className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-yellow-600 to-red-500 text-white rounded-full hover:from-yellow-700 hover:to-red-600 transition duration-300 ease-in-out flex items-center justify-center"
-        >
-          <FaUserPlus className="mr-2" />
-          Adicionar Participante
-        </button>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-yellow-600 to-red-500 text-white rounded-full hover:from-yellow-700 hover:to-red-600 transition duration-300 ease-in-out flex items-center justify-center"
+          >
+            <FaUserPlus className="mr-2" />
+            Adicionar Participante
+          </button>
+          <button
+            onClick={handleLogout}
+            className="w-full sm:w-auto px-6 py-3 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 transition duration-300 ease-in-out flex items-center justify-center"
+          >
+            <FaSignOutAlt className="mr-2" />
+            Sair
+          </button>
+        </div>
       </div>
       {filteredPeople.length === 0 ? (
         <p className="text-center mt-4 text-gray-600">Nenhum participante encontrado</p>
       ) : (
-        <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filteredPeople.map((person) => (
             <li key={person.id} className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300">
               <div className="flex justify-between items-start mb-2">
@@ -147,8 +163,8 @@ export default function PeopleList() {
                 }}
                 disabled={person.checkedIn}
                 className={`mt-3 w-full px-4 py-2 rounded-full ${person.checkedIn
-                  ? "bg-green-200 text-white cursor-not-allowed"
-                  : "bg-green-500 text-white hover:bg-green-500"
+                    ? "bg-green-200 text-white cursor-not-allowed"
+                    : "bg-green-500 text-white hover:bg-green-600"
                   } transition duration-300`}
               >
                 {person.checkedIn ? "Confirmado" : "Confirmar Presença"}

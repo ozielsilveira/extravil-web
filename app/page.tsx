@@ -1,6 +1,19 @@
+'use client'
+
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 import PeopleList from "../components/PeopleList"
 
 export default function Home() {
+  const router = useRouter()
+
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem("isLoggedIn")
+    if (!isLoggedIn) {
+      router.push("/login")
+    }
+  }, [router])
+
   return (
     <main className="container mx-auto p-4">
       <header className="text-center mb-8">
@@ -11,4 +24,6 @@ export default function Home() {
     </main>
   )
 }
+
+
 

@@ -34,3 +34,12 @@ supabase
     }
   })
 
+export async function signInWithEmail(email: string, password: string) {
+  const { data: user, error } = await supabase.auth.signInWithPassword({ email, password })
+
+  if (error) {
+    console.error("Error signing in:", error)
+  }
+
+  return { user, error }
+}
